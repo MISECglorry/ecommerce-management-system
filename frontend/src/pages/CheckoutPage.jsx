@@ -12,6 +12,11 @@ function CheckoutPage() {
   const [error, setError] = useState('');
   const [placing, setPlacing] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [addressForm, setAddressForm] = useState({ street: '', city: '', country: '', zipCode: '' });
+  const [addressSubmitting, setAddressSubmitting] = useState(false);
+  const [addressError, setAddressError] = useState('');
+  const [addressSuccess, setAddressSuccess] = useState('');
+  const [isAddressFormOpen, setIsAddressFormOpen] = useState(false);
 
   const isAuthenticated = Boolean(getToken());
 
@@ -35,14 +40,15 @@ function CheckoutPage() {
 
         if (isMounted) {
           const itemList = Array.isArray(items) ? items : [];
+          const userAddressList = Array.isArray(userAddresses) ? userAddresses : [];
           if (itemList.length === 0) {
             navigate('/cart', { replace: true });
             return;
           }
           setCartItems(itemList);
-          setAddresses(Array.isArray(userAddresses) ? userAddresses : []);
-          if (userAddresses.length > 0) {
-            setSelectedAddressId(String(userAddresses[0].id));
+          setAddresses(userAddressList);
+          if (userAddressList.length > 0) {
+            setSelectedAddressId(String(userAddressList[0].id));
           }
         }
       } catch (err) {
@@ -62,6 +68,39 @@ function CheckoutPage() {
       isMounted = false;
     };
   }, [isAuthenticated, navigate]);
+
+  async function handleAddShippingAddress(event) {
+    event.preventDefault();
+
+    if (!addressForm.street.trim() || !addressForm.city.trim() || !addressForm.country.trim()) {
+      setAddressError('Please fill in the street, city, and country.');
+      return;
+    }
+
+    setAddressSubmitting(true);
+    setAddressError('');
+    setAddressSuccess('');
+
+    try {
+      const createdAddress = await api.post('/addresses', {
+        street: addressForm.street.trim(),
+        city: addressForm.city.trim(),
+        country: addressForm.country.trim(),
+        zipCode: addressForm.zipCode.trim()
+      });
+
+      const updatedAddresses = [...addresses, createdAddress];
+      setAddresses(updatedAddresses);
+      setSelectedAddressId(String(createdAddress.id));
+      setAddressForm({ street: '', city: '', country: '', zipCode: '' });
+      setAddressSuccess('Shipping address saved successfully.');
+      setIsAddressFormOpen(false);
+    } catch (err) {
+      setAddressError(err?.message || 'Unable to save your address. Please try again.');
+    } finally {
+      setAddressSubmitting(false);
+    }
+  }
 
   async function handlePlaceOrder() {
     if (!selectedAddressId) {
@@ -124,6 +163,71 @@ function CheckoutPage() {
         {error ? <div className="status-message status-error" style={{ marginBottom: '1rem' }}>{error}</div> : null}
 
         <div style={{ marginBottom: '1.5rem' }}>
+          <div className="panel-card" style={{ padding: '1rem', display: 'grid', gap: '1rem' }}>
+            <button
+              type="button"
+              onClick={() => setIsAddressFormOpen((prev) => !prev)}
+              className="btn btn-secondary"
+              style={{ width: '100%', justifyContent: 'space-between', display: 'flex' }}
+            >
+              <span>Add a new shipping address</span>
+              <span>{isAddressFormOpen ? '−' : '+'}</span>
+            </button>
+
+            {isAddressFormOpen ? (
+              <div>
+                {addressError ? <div className="status-message status-error" style={{ marginBottom: '0.75rem' }}>{addressError}</div> : null}
+                {addressSuccess ? <div className="status-message status-success" style={{ marginBottom: '0.75rem' }}>{addressSuccess}</div> : null}
+                <form onSubmit={handleAddShippingAddress} className="stack-sm">
+                  <label className="form-field">
+                    <span className="muted">Street</span>
+                    <input type="text" value={addressForm.street} onChange={(e) => setAddressForm((prev) => ({ ...prev, street: e.target.value }))} className="form-control" placeholder="Street" />
+                  </label>
+                  <label className="form-field">
+                    <span className="muted">City</span>
+                    <input type="text" value={addressForm.city} onChange={(e) => setAddressForm((prev) => ({ ...prev, city: e.target.value }))} className="form-control" placeholder="City" />
+                  </label>
+                  <label className="form-field">
+                    <span className="muted">Country</span>
+                    <input type="text" value={addressForm.country} onChange={(e) => setAddressForm((prev) => ({ ...prev, country: e.target.value }))} className="form-control" placeholder="Country" />
+                  </label>
+                  <label className="form-field">
+                    <span className="muted">Postal Code</span>
+                    <input type="text" value={addressForm.zipCode} onChange={(e) => setAddressForm((prev) => ({ ...prev, zipCode: e.target.value }))} className="form-control" placeholder="Postal Code" />
+                  </label>
+                  <button type="submit" disabled={addressSubmitting} className="btn btn-secondary">
+                    {addressSubmitting ? 'Saving...' : 'Save Address'}
+                  </button>
+                </form>
+              </div>
+            ) : null}
+
+            <div>
+              <h3 style={{ marginTop: 0, marginBottom: '0.75rem' }}>Shipping Address</h3>
+              {addresses.length === 0 ? null : (
+                <label className="form-field">
+                  <span className="muted">Select delivery address</span>
+                  <select
+                    value={selectedAddressId}
+                    onChange={(e) => setSelectedAddressId(e.target.value)}
+                    disabled={placing}
+                    className="form-control"
+                    style={{ cursor: placing ? 'not-allowed' : 'pointer' }}
+                  >
+                    <option value="">-- Select an address --</option>
+                    {addresses.map((address) => (
+                      <option key={address.id} value={String(address.id)}>
+                        {address.street}, {address.city}, {address.country} {address.zipCode}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div style={{ marginTop: '1.5rem' }}>
           <h3 style={{ marginTop: 0, marginBottom: '0.75rem' }}>Order Summary</h3>
           <div className="stack-sm">
             {cartItems.map((item) => (
@@ -145,32 +249,7 @@ function CheckoutPage() {
           </div>
         </div>
 
-        <div style={{ marginBottom: '1.5rem' }}>
-          <h3 style={{ marginTop: 0, marginBottom: '0.75rem' }}>Shipping Address</h3>
-          {addresses.length === 0 ? (
-            <p className="status-message status-error">No addresses available. Please add a shipping address.</p>
-          ) : (
-            <label className="form-field">
-              <span className="muted">Select delivery address</span>
-              <select
-                value={selectedAddressId}
-                onChange={(e) => setSelectedAddressId(e.target.value)}
-                disabled={placing}
-                className="form-control"
-                style={{ cursor: placing ? 'not-allowed' : 'pointer' }}
-              >
-                <option value="">-- Select an address --</option>
-                {addresses.map((address) => (
-                  <option key={address.id} value={String(address.id)}>
-                    {address.street}, {address.city}, {address.country} {address.zipCode}
-                  </option>
-                ))}
-              </select>
-            </label>
-          )}
-        </div>
-
-        <button type="button" onClick={handlePlaceOrder} disabled={placing || addresses.length === 0} className="btn btn-primary">
+        <button type="button" onClick={handlePlaceOrder} disabled={placing || addresses.length === 0} className="btn btn-primary" style={{ marginTop: '1.25rem' }}>
           {placing ? 'Placing Order...' : 'Place Order'}
         </button>
       </section>

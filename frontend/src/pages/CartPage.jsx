@@ -27,9 +27,28 @@ function CartPage() {
 
       try {
         const items = await api.get('/cart');
-        if (isMounted) {
-          setCartItems(Array.isArray(items) ? items : []);
+        const normalizedItems = Array.isArray(items) ? items : [];
+
+        if (!isMounted) {
+          return;
         }
+
+        const itemsWithImages = await Promise.all(
+          normalizedItems.map(async (item) => {
+            if (!item?.productId) {
+              return { ...item, imageUrl: '' };
+            }
+
+            try {
+              const product = await api.get(`/products/${item.productId}`);
+              return { ...item, imageUrl: product?.imageUrl || '' };
+            } catch {
+              return { ...item, imageUrl: '' };
+            }
+          })
+        );
+
+        setCartItems(itemsWithImages);
       } catch (err) {
         if (isMounted) {
           setError('Unable to load your cart. Please try again.');
@@ -145,7 +164,11 @@ function CartPage() {
         <div className="stack-sm">
           {cartItems.map((item) => (
             <div key={item.cartItemId} className="panel-card" style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: '1rem', padding: '1rem', alignItems: 'start' }}>
-              <img src="https://picsum.photos/seed/product/200/200" alt={item.productName} style={{ width: '100%', height: '120px', objectFit: 'cover', borderRadius: '8px' }} />
+              <img
+                src={item.imageUrl || 'https://picsum.photos/seed/product/200/200'}
+                alt={item.productName}
+                style={{ width: '100%', height: '120px', objectFit: 'cover', borderRadius: '8px' }}
+              />
 
               <div style={{ display: 'grid', gap: '0.75rem' }}>
                 <div>

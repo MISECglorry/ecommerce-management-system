@@ -23,6 +23,21 @@ WHERE name = 'Clothing'
       SELECT 1 FROM products p WHERE p.category_id = categories.id
   );
 
+-- Remove any existing catalog rows with the new product names so this migration is idempotent.
+DELETE FROM products
+WHERE name IN (
+    'Mechanical Keyboard',
+    'Bluetooth Headphones',
+    'USB-C Hub',
+    'Portable SSD (1TB)',
+    'Full HD Webcam',
+    'The Pragmatic Programmer',
+    'Design Patterns',
+    'Introduction to Algorithms',
+    'Atomic Habits',
+    'Deep Work'
+);
+
 -- Insert the new Electronics and Books catalog.
 INSERT INTO products (name, description, price, stock, image_url, category_id)
 VALUES

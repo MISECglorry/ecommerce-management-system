@@ -204,17 +204,19 @@ function ProductDetailsPage() {
             </div>
 
             <div style={{ display: 'grid', gap: '0.75rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
-                <button
-                  type="button"
-                  disabled={isOutOfStock || isAdding}
-                  onClick={handleAddToCart}
-                  className={`btn ${isOutOfStock ? 'btn-secondary' : 'btn-primary'}`}
-                >
-                  {isOutOfStock ? 'Out of Stock' : isAdding ? 'Adding...' : 'Add to Cart'}
-                </button>
-                {isOutOfStock ? <span style={{ color: '#b91c1c', fontWeight: 600 }}>Out of Stock</span> : null}
-              </div>
+              {isAuthenticated ? (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+                  <button
+                    type="button"
+                    disabled={isOutOfStock || isAdding}
+                    onClick={handleAddToCart}
+                    className={`btn ${isOutOfStock ? 'btn-secondary' : 'btn-primary'}`}
+                  >
+                    {isOutOfStock ? 'Out of Stock' : isAdding ? 'Adding...' : 'Add to Cart'}
+                  </button>
+                  {isOutOfStock ? <span style={{ color: '#b91c1c', fontWeight: 600 }}>Out of Stock</span> : null}
+                </div>
+              ) : null}
               {cartMessage ? <div className="status-message status-success">{cartMessage}</div> : null}
               {cartError ? <div className="status-message status-error">{cartError}</div> : null}
             </div>

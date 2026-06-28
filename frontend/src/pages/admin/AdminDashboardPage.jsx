@@ -109,24 +109,6 @@ function AdminDashboardPage() {
       </section>
 
       <section className="panel panel-padding">
-        <h3 style={{ marginTop: 0 }}>Quick Actions</h3>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
-          <Link to="/admin/orders" className="btn btn-primary">
-            Manage Orders
-          </Link>
-          <Link to="/admin/reports" className="btn btn-primary">
-            Reports
-          </Link>
-          <Link to="/admin/segments" className="btn btn-primary">
-            Customer Segmentation
-          </Link>
-          <Link to="/admin/recommendations" className="btn btn-primary">
-            Recommendation Analytics
-          </Link>
-        </div>
-      </section>
-
-      <section className="panel panel-padding">
         <h3 style={{ marginTop: 0 }}>Low-stock Products</h3>
         {lowStockProducts.length === 0 ? (
           <p className="page-subtitle">No low-stock products were returned by the backend.</p>

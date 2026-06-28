@@ -1,14 +1,16 @@
 import { Link, Navigate, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { api } from '../services/api';
-import { clearToken, getToken, getUserRole } from '../services/auth';
+import { clearToken, getToken, getUserName, getUserRole } from '../services/auth';
 import { isAdminRole, resolveNavigation } from '../navigation/navigation';
 
 function CustomerLayout() {
   const navigate = useNavigate();
   const [cartCount, setCartCount] = useState(0);
   const role = getUserRole();
-  const navigation = resolveNavigation(role, Boolean(getToken()));
+  const isSignedIn = Boolean(getToken());
+  const userName = getUserName();
+  const navigation = resolveNavigation(role, isSignedIn);
 
   useEffect(() => {
     let isMounted = true;
@@ -60,7 +62,11 @@ function CustomerLayout() {
   return (
     <div>
       <header style={{ padding: '1rem', borderBottom: '1px solid #ddd', background: '#fff' }}>
-        <h1>Ecommerce Management System</h1>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+          <img src="/favicon.svg" alt="iStore logo" style={{ width: '40px', height: '40px', borderRadius: '10px' }} />
+          <h1 style={{ margin: 0 }}>iStore</h1>
+        </div>
+        {isSignedIn && userName ? <p style={{ margin: '0.35rem 0 0', fontWeight: 600 }}>Welcome, {userName}</p> : null}
         <nav style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem', flexWrap: 'wrap' }}>
           {navigation.map((item) => {
             if (item.kind === 'button') {

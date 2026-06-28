@@ -17,7 +17,6 @@ import AdminOrdersPage from './pages/admin/AdminOrdersPage';
 import AdminReportsPage from './pages/admin/AdminReportsPage';
 import CustomerSegmentationPage from './pages/admin/CustomerSegmentationPage';
 import RecommendationAnalyticsPage from './pages/admin/RecommendationAnalyticsPage';
-import AdminProductsPage from './pages/admin/AdminProductsPage';
 
 function App() {
   return (
@@ -43,7 +42,6 @@ function App() {
         <Route element={<AdminLayout />}>
           <Route element={<RoleRoute allowedRoles={['ADMIN']} redirectTo="/" />}>
             <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
-            <Route path="/admin/products" element={<AdminProductsPage />} />
             <Route path="/admin/orders" element={<AdminOrdersPage />} />
             <Route path="/admin/reports" element={<AdminReportsPage />} />
             <Route path="/admin/segments" element={<CustomerSegmentationPage />} />

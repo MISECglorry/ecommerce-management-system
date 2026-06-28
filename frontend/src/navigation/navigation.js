@@ -16,7 +16,6 @@ export function resolveNavigation(role, signedIn) {
   if (isAdminRole(role)) {
     return [
       { key: 'dashboard', label: 'Dashboard', to: '/admin/dashboard' },
-      { key: 'products-management', label: 'Products Management', to: '/admin/products' },
       { key: 'orders-management', label: 'Orders Management', to: '/admin/orders' },
       { key: 'reports', label: 'Reports', to: '/admin/reports' },
       { key: 'recommendations', label: 'Recommendation Analytics', to: '/admin/recommendations' },
@@ -30,7 +29,6 @@ export function resolveNavigation(role, signedIn) {
     { key: 'products', label: 'Products', to: '/products' },
     { key: 'cart', label: 'Cart', to: '/cart' },
     { key: 'orders', label: 'Orders', to: '/orders' },
-    { key: 'addresses', label: 'Addresses', to: '/addresses' },
     { key: 'logout', label: 'Logout', to: '/login', kind: 'button' }
   ];
 }

@@ -42,6 +42,33 @@ export function getUserRole() {
   return typeof role === 'string' ? role : null;
 }
 
+export function getUserName() {
+  const token = getToken();
+  const payload = parseJwtPayload(token);
+
+  if (!payload) return null;
+
+  const candidateValues = [
+    payload.name,
+    payload.fullName,
+    payload.full_name,
+    payload.firstName,
+    payload.first_name,
+    payload.lastName,
+    payload.last_name,
+    payload.username,
+    payload.sub,
+    payload.email
+  ];
+
+  const matchedValue = candidateValues.find((value) => typeof value === 'string' && value.trim());
+
+  if (!matchedValue) return null;
+
+  const normalizedName = matchedValue.trim();
+  return normalizedName.includes('@') ? normalizedName.split('@')[0] : normalizedName;
+}
+
 export function isAdminAuthenticated() {
   const role = getUserRole();
   return role === 'ADMIN' || role === 'ROLE_ADMIN' || role === 'admin' || role === 'role_admin';

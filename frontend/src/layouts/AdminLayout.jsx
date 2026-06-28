@@ -19,7 +19,10 @@ function AdminLayout() {
   return (
     <div>
       <header style={{ padding: '1rem', borderBottom: '1px solid #ddd', background: '#fff' }}>
-        <h1>Admin Panel</h1>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+          <img src="/favicon.svg" alt="iStore logo" style={{ width: '40px', height: '40px', borderRadius: '10px' }} />
+          <h1 style={{ margin: 0 }}>Admin Panel</h1>
+        </div>
         <nav style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem', flexWrap: 'wrap' }}>
           {navigation.map((item) => {
             if (item.kind === 'button') {

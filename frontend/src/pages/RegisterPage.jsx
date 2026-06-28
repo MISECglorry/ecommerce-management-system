@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { api } from '../services/api';
 
 function RegisterPage() {
@@ -90,7 +90,13 @@ function RegisterPage() {
   return (
     <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}>
       <div className="panel" style={{ width: '100%', maxWidth: '420px', padding: '2rem' }}>
-        <h2 className="page-title" style={{ marginBottom: '0.5rem' }}>Register</h2>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
+          <img src="/favicon.svg" alt="iStore logo" style={{ width: '36px', height: '36px', borderRadius: '10px' }} />
+          <h2 className="page-title" style={{ margin: 0 }}>iStore Register</h2>
+        </div>
+        <Link to="/" className="btn btn-secondary" style={{ marginBottom: '1rem', width: 'fit-content' }}>
+          ← Back to Home
+        </Link>
         <p className="page-subtitle" style={{ marginBottom: '1.25rem' }}>Create a new account to get started.</p>
 
         {error ? <div className="status-message status-error" style={{ marginBottom: '1rem' }}>{error}</div> : null}
@@ -124,7 +130,7 @@ function RegisterPage() {
               }}
               onBlur={() => setTouched((prev) => ({ ...prev, email: true }))}
               autoComplete="email"
-              placeholder="you@example.com"
+              placeholder="you@istore.com"
               className="form-control"
               aria-invalid={touched.email && !email.trim()}
             />

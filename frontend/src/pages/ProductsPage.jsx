@@ -15,6 +15,7 @@ function ProductsPage() {
   const [cartError, setCartError] = useState('');
   const [addingProductId, setAddingProductId] = useState(null);
   const navigate = useNavigate();
+  const isAuthenticated = Boolean(getToken());
 
   useEffect(() => {
     let isMounted = true;
@@ -189,15 +190,17 @@ function ProductsPage() {
                   <Link to={`/products/${product.id}`} className="btn btn-secondary" style={{ flex: 1, minWidth: '110px' }}>
                     View Details
                   </Link>
-                  <button
-                    type="button"
-                    disabled={isOutOfStock || addingProductId === product.id}
-                    onClick={() => handleAddToCart(product.id)}
-                    className={`btn ${isOutOfStock ? 'btn-secondary' : 'btn-primary'}`}
-                    style={{ flex: 1, minWidth: '120px' }}
-                  >
-                    {isOutOfStock ? 'Out of Stock' : addingProductId === product.id ? 'Adding...' : 'Add to Cart'}
-                  </button>
+                  {isAuthenticated ? (
+                    <button
+                      type="button"
+                      disabled={isOutOfStock || addingProductId === product.id}
+                      onClick={() => handleAddToCart(product.id)}
+                      className={`btn ${isOutOfStock ? 'btn-secondary' : 'btn-primary'}`}
+                      style={{ flex: 1, minWidth: '120px' }}
+                    >
+                      {isOutOfStock ? 'Out of Stock' : addingProductId === product.id ? 'Adding...' : 'Add to Cart'}
+                    </button>
+                  ) : null}
                 </div>
               </div>
             );
