@@ -92,8 +92,9 @@ function AddressesPage() {
         <h2 className="page-title">My Addresses</h2>
         <p className="page-subtitle">Save a shipping address so checkout can be completed quickly.</p>
 
-        {error ? <div className="status-message status-error" style={{ marginBottom: '1rem' }}>{error}</div> : null}
-        {success ? <div className="status-message status-success" style={{ marginBottom: '1rem' }}>{success}</div> : null}
+        <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '1rem 0' }} />
+
+        <h3 className="section-title" style={{ marginTop: 0 }}>Add New Address</h3>
 
         <form onSubmit={handleSubmit} className="stack-sm" style={{ marginBottom: '1.5rem' }}>
           <label className="form-field">
@@ -116,18 +117,33 @@ function AddressesPage() {
             {submitting ? 'Saving...' : 'Add Address'}
           </button>
         </form>
+      </section>
+
+      <section className="panel panel-padding">
+        <h3 className="section-title" style={{ marginTop: 0 }}>Saved Addresses</h3>
+
+        {error ? <div className="status-message status-error" style={{ marginBottom: '1rem' }}>{error}</div> : null}
+        {success ? <div className="status-message status-success" style={{ marginBottom: '1rem' }}>{success}</div> : null}
 
         {loading ? (
-          <p className="page-subtitle">Loading saved addresses...</p>
-        ) : addresses.length === 0 ? (
-          <div className="panel-card" style={{ color: 'var(--muted)' }}>
-            No saved addresses yet. Add your first shipping address above.
+          <div className="stack-sm">
+            {[0, 1, 2].map((item) => (
+              <div key={item} className="panel-card" style={{ padding: '1rem', display: 'grid', gap: '0.4rem' }}>
+                <div className="skeleton skeleton-title" style={{ width: '55%' }} />
+                <div className="skeleton skeleton-text" style={{ width: '40%' }} />
+              </div>
+            ))}
           </div>
+        ) : addresses.length === 0 ? (
+          <div className="empty-state">No saved addresses yet. Add your first shipping address above.</div>
         ) : (
           <div className="stack-sm">
             {addresses.map((address) => (
-              <div key={address.id} className="panel-card">
-                <p style={{ margin: '0 0 0.25rem', fontWeight: 600 }}>{address.street}</p>
+              <div key={address.id} className="panel-card" style={{ padding: '1rem' }}>
+                <p style={{ margin: '0 0 0.25rem', fontWeight: 600 }}>
+                  <span style={{ marginRight: '0.4rem' }}>📍</span>
+                  {address.street}
+                </p>
                 <p className="muted" style={{ margin: 0 }}>
                   {address.city}, {address.country} {address.zipCode}
                 </p>

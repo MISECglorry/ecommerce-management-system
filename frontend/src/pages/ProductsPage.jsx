@@ -77,9 +77,31 @@ function ProductsPage() {
     return (
       <div className="page-shell">
         <section className="panel panel-padding">
-          <h2 className="page-title">Loading products...</h2>
-          <p className="page-subtitle">Fetching the latest electronics catalog.</p>
+          <div className="skeleton skeleton-title" style={{ width: '40%', marginBottom: '0.5rem' }} />
+          <div className="skeleton skeleton-text" style={{ width: '60%' }} />
         </section>
+
+        <section className="panel panel-padding">
+          <div className="grid-responsive">
+            {[0, 1, 2].map((item) => (
+              <div key={item}>
+                <div className="skeleton skeleton-text" style={{ width: '30%', marginBottom: '0.4rem' }} />
+                <div className="skeleton" style={{ height: '2.8rem', borderRadius: '10px' }} />
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <div className="grid-responsive">
+          {[0, 1, 2, 3, 4, 5].map((item) => (
+            <div key={item} className="panel panel-padding" style={{ display: 'grid', gap: '0.8rem' }}>
+              <div className="skeleton" style={{ height: '180px', borderRadius: '10px' }} />
+              <div className="skeleton skeleton-title" style={{ width: '70%' }} />
+              <div className="skeleton skeleton-text" style={{ width: '40%' }} />
+              <div className="skeleton" style={{ height: '2.5rem', borderRadius: '10px' }} />
+            </div>
+          ))}
+        </div>
       </div>
     );
   }

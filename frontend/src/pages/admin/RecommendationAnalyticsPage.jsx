@@ -116,8 +116,35 @@ function RecommendationAnalyticsPage() {
     return (
       <div className="page-shell">
         <section className="panel panel-padding">
-          <h2 className="page-title">Loading recommendation analytics...</h2>
-          <p className="page-subtitle">Preparing the latest recommendation insights.</p>
+          <div className="skeleton skeleton-title" style={{ width: '40%', marginBottom: '0.5rem' }} />
+          <div className="skeleton skeleton-text" style={{ width: '60%', marginBottom: '1rem' }} />
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem' }}>
+            {[0, 1, 2].map((item) => (
+              <div key={item} className="panel-card" style={{ padding: '1rem', display: 'grid', gap: '0.4rem' }}>
+                <div className="skeleton skeleton-text" style={{ width: '55%' }} />
+                <div className="skeleton skeleton-title" style={{ width: '45%' }} />
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="panel panel-padding">
+          <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem' }}>
+            <div className="skeleton" style={{ height: '2.8rem', borderRadius: '10px', flex: 1 }} />
+            <div className="skeleton" style={{ height: '2.8rem', borderRadius: '10px', width: '160px' }} />
+          </div>
+
+          <div className="stack-sm">
+            {[0, 1, 2, 3, 4].map((row) => (
+              <div key={row} className="panel-card" style={{ padding: '0.75rem', display: 'flex', justifyContent: 'space-between', gap: '1rem' }}>
+                <div className="skeleton skeleton-text" style={{ flex: 1 }} />
+                <div className="skeleton skeleton-text" style={{ flex: 1 }} />
+                <div className="skeleton skeleton-text" style={{ width: '60px' }} />
+                <div className="skeleton" style={{ width: '70px', height: '1.6rem', borderRadius: '999px' }} />
+              </div>
+            ))}
+          </div>
         </section>
       </div>
     );
@@ -143,7 +170,7 @@ function RecommendationAnalyticsPage() {
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem' }}>
             {summary.map((item) => (
-              <div key={item.label} className="panel-card">
+              <div key={item.label} className="panel-card" style={{ padding: '1rem', borderLeft: '4px solid var(--primary)', borderRadius: '0 12px 12px 0' }}>
                 <div className="muted" style={{ fontSize: '0.9rem' }}>{item.label}</div>
                 <div style={{ fontSize: '1.5rem', fontWeight: 700, marginTop: '0.35rem' }}>{item.value}</div>
               </div>
@@ -168,7 +195,7 @@ function RecommendationAnalyticsPage() {
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem' }}>
           {summary.map((item) => (
-            <div key={item.label} className="panel-card">
+            <div key={item.label} className="panel-card" style={{ padding: '1rem', borderLeft: '4px solid var(--primary)', borderRadius: '0 12px 12px 0' }}>
               <div className="muted" style={{ fontSize: '0.9rem' }}>{item.label}</div>
               <div style={{ fontSize: '1.5rem', fontWeight: 700, marginTop: '0.35rem' }}>{item.value}</div>
             </div>
@@ -222,7 +249,19 @@ function RecommendationAnalyticsPage() {
                       {topRecommendation?.score != null ? Number(topRecommendation.score).toFixed(2) : '—'}
                     </td>
                     <td style={{ padding: '0.75rem', borderBottom: '1px solid var(--border-light)' }}>
-                      {topRecommendation?.score != null ? (Number(topRecommendation.score) >= 0.7 ? 'High' : Number(topRecommendation.score) >= 0.4 ? 'Medium' : 'Low') : '—'}
+                      {topRecommendation?.score != null ? (
+                        <span style={{
+                          borderRadius: '999px',
+                          padding: '0.2rem 0.6rem',
+                          fontSize: '0.8rem',
+                          fontWeight: 700,
+                          display: 'inline-block',
+                          background: Number(topRecommendation.score) >= 0.7 ? '#dcfce7' : Number(topRecommendation.score) >= 0.4 ? '#fef9c3' : '#fee2e2',
+                          color: Number(topRecommendation.score) >= 0.7 ? '#166534' : Number(topRecommendation.score) >= 0.4 ? '#854d0e' : '#b91c1c'
+                        }}>
+                          {Number(topRecommendation.score) >= 0.7 ? 'High' : Number(topRecommendation.score) >= 0.4 ? 'Medium' : 'Low'}
+                        </span>
+                      ) : '—'}
                     </td>
                   </tr>
                 );

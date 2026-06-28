@@ -90,6 +90,7 @@ function RegisterPage() {
   return (
     <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}>
       <div className="panel" style={{ width: '100%', maxWidth: '420px', padding: '2rem' }}>
+        <div style={{ height: '4px', background: 'var(--primary)', borderRadius: '16px 16px 0 0', margin: '-2rem -2rem 1.5rem -2rem' }} />
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
           <img src="/favicon.svg" alt="iStore logo" style={{ width: '36px', height: '36px', borderRadius: '10px' }} />
           <h2 className="page-title" style={{ margin: 0 }}>iStore Register</h2>
@@ -151,6 +152,9 @@ function RegisterPage() {
               className="form-control"
               aria-invalid={touched.password && !password}
             />
+            <p style={{ margin: '0.25rem 0 0', fontSize: '0.8rem', color: 'var(--muted)' }}>
+              Use at least 8 characters for a strong password.
+            </p>
           </label>
 
           <label className="form-field">
@@ -174,6 +178,17 @@ function RegisterPage() {
             {isSubmitting ? 'Creating account...' : 'Create account'}
           </button>
         </form>
+
+        <p style={{ textAlign: 'center', marginTop: '0.75rem', fontSize: '0.95rem', color: 'var(--muted)' }}>
+          Already have an account?{' '}
+          <Link to="/login" style={{ fontWeight: 600, color: 'var(--text)', textDecoration: 'underline' }}>
+            Sign in
+          </Link>
+        </p>
+
+        <p style={{ textAlign: 'center', fontSize: '0.8rem', color: 'var(--muted)', marginTop: '0.5rem' }}>
+          iStore © 2025
+        </p>
       </div>
     </div>
   );

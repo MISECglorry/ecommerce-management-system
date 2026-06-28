@@ -132,9 +132,24 @@ function AdminReportsPage() {
     return (
       <div className="page-shell">
         <section className="panel panel-padding">
-          <h2 className="page-title">Loading reports...</h2>
-          <p className="page-subtitle">Fetching the latest reporting options.</p>
+          <div className="skeleton skeleton-title" style={{ width: '30%', marginBottom: '0.5rem' }} />
+          <div className="skeleton skeleton-text" style={{ width: '50%' }} />
         </section>
+
+        <div style={{ display: 'grid', gap: '1rem', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', marginTop: '1rem' }}>
+          {[0, 1, 2, 3].map((item) => (
+            <div key={item} className="panel-card" style={{ padding: '1rem', display: 'grid', gap: '0.75rem' }}>
+              <div className="skeleton skeleton-title" style={{ width: '60%' }} />
+              <div className="skeleton skeleton-text" style={{ width: '80%' }} />
+              <div className="skeleton skeleton-text" style={{ width: '40%' }} />
+              <div style={{ display: 'flex', gap: '0.5rem' }}>
+                <div className="skeleton" style={{ width: '100px', height: '2.2rem', borderRadius: '8px' }} />
+                <div className="skeleton" style={{ width: '100px', height: '2.2rem', borderRadius: '8px' }} />
+                <div className="skeleton" style={{ width: '100px', height: '2.2rem', borderRadius: '8px' }} />
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
@@ -174,7 +189,7 @@ function AdminReportsPage() {
         </div>
 
         {filteredReports.length === 0 ? (
-          <div className="panel-card">No reports are available at the moment.</div>
+          <div className="empty-state">No reports are available at the moment.</div>
         ) : (
           <div style={{ display: 'grid', gap: '1rem', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))' }}>
             {filteredReports.map((report) => {
@@ -183,27 +198,31 @@ function AdminReportsPage() {
               const isHistoryLoading = loadingHistoryId === report.id;
 
               return (
-                <div key={report.id} className="panel-card" style={{ display: 'grid', gap: '0.8rem' }}>
+                <div key={report.id} className="panel-card" style={{ display: 'grid', gap: '0.8rem', padding: '1rem' }}>
                   <div>
                     <div style={{ fontWeight: 700 }}>{report.name}</div>
                     <div className="muted" style={{ fontSize: '0.95rem', marginTop: '0.25rem' }}>{report.description || 'No description provided.'}</div>
                   </div>
 
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
-                    <span className="muted" style={{ fontSize: '0.95rem' }}>Type: {report.reportType || 'N/A'}</span>
+                    <span className="muted" style={{ fontSize: '0.95rem' }}>
+                      Type: <span style={{ background: 'var(--secondary)', color: 'var(--text)', borderRadius: '999px', padding: '0.2rem 0.55rem', fontSize: '0.8rem', fontWeight: 600 }}>
+                        {report.reportType || 'N/A'}
+                      </span>
+                    </span>
                     <span style={{ padding: '0.3rem 0.6rem', borderRadius: '999px', background: report.enabled ? '#dcfce7' : '#f3f4f6', color: report.enabled ? '#166534' : '#374151', fontSize: '0.85rem' }}>
                       {report.enabled ? 'Active' : 'Inactive'}
                     </span>
                   </div>
 
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-                    <button type="button" disabled={isRunning} onClick={() => handleRunReport(report)} style={primaryButtonStyle(isRunning)}>
+                    <button type="button" disabled={isRunning} onClick={() => handleRunReport(report)} className="btn btn-primary">
                       {isRunning ? 'Running...' : 'Run Report'}
                     </button>
-                    <button type="button" onClick={() => handleDownloadLatest(report)} style={secondaryButtonStyle()}>
+                    <button type="button" onClick={() => handleDownloadLatest(report)} className="btn btn-secondary">
                       Download Latest Report
                     </button>
-                    <button type="button" disabled={isHistoryLoading} onClick={() => handleViewHistory(report)} style={secondaryButtonStyle(isHistoryLoading)}>
+                    <button type="button" disabled={isHistoryLoading} onClick={() => handleViewHistory(report)} className="btn btn-secondary">
                       {isHistoryLoading ? 'Loading...' : 'View History'}
                     </button>
                   </div>
@@ -233,9 +252,14 @@ function AdminReportsPage() {
         ) : (
           <div className="stack-sm">
             {lowStockProducts.map((product) => (
-              <div key={product.id} className="panel-card">
-                <div style={{ fontWeight: 600 }}>{product.name}</div>
-                <div className="muted" style={{ fontSize: '0.95rem', marginTop: '0.2rem' }}>Current stock: {product.stock}</div>
+              <div key={product.id} className="panel-card" style={{ padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem' }}>
+                <div>
+                  <div style={{ fontWeight: 600 }}>{product.name}</div>
+                  {product.id ? <div className="muted" style={{ fontSize: '0.95rem', marginTop: '0.2rem' }}>ID: {product.id}</div> : null}
+                </div>
+                <span style={{ background: 'var(--error-bg)', color: 'var(--error-text)', borderRadius: '999px', padding: '0.2rem 0.65rem', fontSize: '0.8rem', fontWeight: 700 }}>
+                  Stock: {product.stock}
+                </span>
               </div>
             ))}
           </div>
@@ -243,28 +267,6 @@ function AdminReportsPage() {
       </section>
     </div>
   );
-}
-
-function primaryButtonStyle(disabled) {
-  return {
-    padding: '0.6rem 0.9rem',
-    border: 'none',
-    borderRadius: '6px',
-    background: disabled ? '#9ca3af' : '#111827',
-    color: '#fff',
-    cursor: disabled ? 'not-allowed' : 'pointer'
-  };
-}
-
-function secondaryButtonStyle(disabled) {
-  return {
-    padding: '0.6rem 0.9rem',
-    border: 'none',
-    borderRadius: '6px',
-    background: disabled ? '#d1d5db' : '#e5e7eb',
-    color: '#111827',
-    cursor: disabled ? 'not-allowed' : 'pointer'
-  };
 }
 
 export default AdminReportsPage;

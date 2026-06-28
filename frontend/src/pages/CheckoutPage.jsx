@@ -131,8 +131,21 @@ function CheckoutPage() {
     return (
       <div className="page-shell">
         <section className="panel panel-padding">
-          <h2 className="page-title">Loading checkout data...</h2>
-          <p className="page-subtitle">Preparing your order summary.</p>
+          <div className="skeleton skeleton-title" style={{ width: '30%', marginBottom: '0.5rem' }} />
+          <div className="skeleton skeleton-text" style={{ width: '50%', marginBottom: '1.5rem' }} />
+
+          <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
+            <div style={{ flex: '1 1 280px' }}>
+              <div className="skeleton" style={{ height: '180px', borderRadius: '12px' }} />
+            </div>
+
+            <div style={{ flex: '1 1 280px', display: 'grid', gap: '0.75rem' }}>
+              {[0, 1, 2, 3].map((item) => (
+                <div key={item} className="skeleton skeleton-text" />
+              ))}
+              <div className="skeleton" style={{ height: '2.8rem', borderRadius: '10px' }} />
+            </div>
+          </div>
         </section>
       </div>
     );
@@ -141,9 +154,11 @@ function CheckoutPage() {
   if (success) {
     return (
       <div className="page-shell">
-        <section className="panel panel-padding status-success" style={{ textAlign: 'center' }}>
-          <h2 className="page-title" style={{ marginBottom: '0.5rem' }}>Order Placed Successfully!</h2>
-          <p className="page-subtitle">Redirecting to your orders...</p>
+        <section className="panel panel-padding" style={{ textAlign: 'center' }}>
+          <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>✅</div>
+          <h2 className="page-title">Order Placed Successfully!</h2>
+          <p className="page-subtitle">Your order is confirmed and being processed.</p>
+          <p className="muted" style={{ marginTop: '0.5rem' }}>Redirecting you to your orders...</p>
         </section>
       </div>
     );
@@ -158,11 +173,20 @@ function CheckoutPage() {
     <div className="page-shell">
       <section className="panel panel-padding">
         <h2 className="page-title">Checkout</h2>
-        <p className="page-subtitle">Review your items and confirm your delivery details.</p>
+        <p className="page-subtitle" style={{ marginBottom: '1rem' }}>Review your items and confirm your delivery details.</p>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', marginBottom: '1.25rem' }}>
+          <span style={{ fontWeight: 700, color: 'var(--primary)' }}>🛒 Cart</span>
+          <span style={{ color: 'var(--muted)' }}>→</span>
+          <span style={{ fontWeight: 700, color: 'var(--primary)' }}>📦 Checkout</span>
+          <span style={{ color: 'var(--muted)' }}>→</span>
+          <span style={{ color: 'var(--muted)' }}>✅ Confirm</span>
+        </div>
 
         {error ? <div className="status-message status-error" style={{ marginBottom: '1rem' }}>{error}</div> : null}
 
         <div style={{ marginBottom: '1.5rem' }}>
+          <h3 className="section-title" style={{ marginTop: 0, marginBottom: '0.75rem' }}>Delivery Details</h3>
           <div className="panel-card" style={{ padding: '1rem', display: 'grid', gap: '1rem' }}>
             <button
               type="button"
@@ -226,30 +250,30 @@ function CheckoutPage() {
             </div>
           </div>
         </div>
+      </section>
 
-        <div style={{ marginTop: '1.5rem' }}>
-          <h3 style={{ marginTop: 0, marginBottom: '0.75rem' }}>Order Summary</h3>
-          <div className="stack-sm">
-            {cartItems.map((item) => (
-              <div key={item.cartItemId} className="panel-card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.9rem 1rem', flexWrap: 'wrap', gap: '0.75rem' }}>
-                <div>
-                  <p style={{ margin: '0 0 0.2rem', fontWeight: 600 }}>{item.productName}</p>
-                  <p className="muted" style={{ margin: 0, fontSize: '0.92rem' }}>
-                    Qty: {item.quantity} × ${parseFloat(item.unitPrice).toFixed(2)}
-                  </p>
-                </div>
-                <strong>${parseFloat(item.totalPrice).toFixed(2)}</strong>
+      <section className="panel panel-padding">
+        <h3 className="section-title" style={{ marginTop: 0 }}>Order Summary</h3>
+        <div className="stack-sm">
+          {cartItems.map((item) => (
+            <div key={item.cartItemId} className="panel-card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.9rem 1rem', flexWrap: 'wrap', gap: '0.75rem' }}>
+              <div>
+                <p style={{ margin: '0 0 0.2rem', fontWeight: 600 }}>{item.productName}</p>
+                <p className="muted" style={{ margin: 0, fontSize: '0.92rem' }}>
+                  Qty: {item.quantity} × ${parseFloat(item.unitPrice).toFixed(2)}
+                </p>
               </div>
-            ))}
-          </div>
-
-          <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '2px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
-            <span style={{ fontSize: '1.05rem', fontWeight: 600 }}>Total:</span>
-            <strong style={{ fontSize: '1.35rem' }}>${totalAmount.toFixed(2)}</strong>
-          </div>
+              <strong>${parseFloat(item.totalPrice).toFixed(2)}</strong>
+            </div>
+          ))}
         </div>
 
-        <button type="button" onClick={handlePlaceOrder} disabled={placing || addresses.length === 0} className="btn btn-primary" style={{ marginTop: '1.25rem' }}>
+        <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '2px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
+          <span style={{ fontSize: '1.1rem', fontWeight: 600 }}>Total:</span>
+          <strong style={{ fontSize: '1.4rem' }}>${totalAmount.toFixed(2)}</strong>
+        </div>
+
+        <button type="button" onClick={handlePlaceOrder} disabled={placing || addresses.length === 0} className="btn btn-primary" style={{ marginTop: '1.25rem', width: '100%' }}>
           {placing ? 'Placing Order...' : 'Place Order'}
         </button>
       </section>

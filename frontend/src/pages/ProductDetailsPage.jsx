@@ -121,9 +121,17 @@ function ProductDetailsPage() {
   if (loading) {
     return (
       <div className="page-shell">
-        <section className="panel panel-padding">
-          <h2 className="page-title">Loading product...</h2>
-          <p className="page-subtitle">Gathering the latest details for this item.</p>
+        <section className="panel panel-padding" style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
+          <div style={{ flex: '1 1 300px' }}>
+            <div className="skeleton" style={{ height: '320px', borderRadius: '12px' }} />
+          </div>
+
+          <div style={{ flex: '1 1 300px', display: 'grid', gap: '0.75rem' }}>
+            <div className="skeleton skeleton-title" style={{ width: '70%' }} />
+            <div className="skeleton skeleton-text" style={{ width: '30%' }} />
+            <div className="skeleton skeleton-text" style={{ width: '50%' }} />
+            <div className="skeleton" style={{ height: '2.8rem', borderRadius: '10px', width: '160px' }} />
+          </div>
         </section>
       </div>
     );

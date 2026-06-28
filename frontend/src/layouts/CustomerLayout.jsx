@@ -1,4 +1,4 @@
-import { Link, Navigate, NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { Navigate, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { api } from '../services/api';
 import { clearToken, getToken, getUserName, getUserRole } from '../services/auth';
@@ -61,34 +61,46 @@ function CustomerLayout() {
 
   return (
     <div>
-      <header style={{ padding: '1rem', borderBottom: '1px solid #ddd', background: '#fff' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
-          <img src="/favicon.svg" alt="iStore logo" style={{ width: '40px', height: '40px', borderRadius: '10px' }} />
-          <h1 style={{ margin: 0 }}>iStore</h1>
-        </div>
-        {isSignedIn && userName ? <p style={{ margin: '0.35rem 0 0', fontWeight: 600 }}>Welcome, {userName}</p> : null}
-        <nav style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem', flexWrap: 'wrap' }}>
-          {navigation.map((item) => {
-            if (item.kind === 'button') {
-              return (
-                <button key={item.key} type="button" onClick={handleLogout} style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: 0 }}>
-                  {item.label}
-                </button>
-              );
-            }
+      <header className="header-root">
+        <div className="header-inner">
+          <div className="header-brand">
+            <img className="header-logo" src="/favicon.svg" alt="iStore logo" />
+            <h1>iStore</h1>
+          </div>
 
-            const isCartLink = item.key === 'cart';
-            return (
-              <NavLink
-                key={item.key}
-                to={item.to}
-                style={({ isActive }) => ({ textDecoration: isActive ? 'underline' : 'none', fontWeight: isActive ? 700 : 400 })}
-              >
-                {isCartLink ? `${item.label}${cartCount ? ` (${cartCount})` : ''}` : item.label}
-              </NavLink>
-            );
-          })}
-        </nav>
+          <div className="header-actions">
+            {isSignedIn && userName ? <p className="header-greeting">Welcome, {userName}</p> : null}
+            <nav className="header-nav">
+              {navigation.map((item) => {
+                if (item.kind === 'button') {
+                  return (
+                    <button key={item.key} type="button" onClick={handleLogout} className="nav-link nav-link-button">
+                      {item.label}
+                    </button>
+                  );
+                }
+
+                const isCartLink = item.key === 'cart';
+                return (
+                  <NavLink
+                    key={item.key}
+                    to={item.to}
+                    className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                  >
+                    {isCartLink ? (
+                      <>
+                        {item.label}
+                        {cartCount ? <span className="nav-badge">{cartCount}</span> : null}
+                      </>
+                    ) : (
+                      item.label
+                    )}
+                  </NavLink>
+                );
+              })}
+            </nav>
+          </div>
+        </div>
       </header>
 
       <main>

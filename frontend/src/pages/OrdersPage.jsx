@@ -61,13 +61,49 @@ function OrdersPage() {
     });
   }
 
+  function getStatusStyle(status) {
+    const normalizedStatus = String(status || '').toUpperCase();
+
+    switch (normalizedStatus) {
+      case 'CREATED':
+      case 'PENDING':
+        return { background: 'var(--secondary)', color: 'var(--text)' };
+      case 'PROCESSING':
+      case 'CONFIRMED':
+        return { background: '#dbeafe', color: '#1e40af' };
+      case 'SHIPPED':
+        return { background: '#fef9c3', color: '#854d0e' };
+      case 'DELIVERED':
+      case 'COMPLETED':
+        return { background: 'var(--success-bg)', color: 'var(--success-text)' };
+      case 'CANCELLED':
+        return { background: 'var(--error-bg)', color: 'var(--error-text)' };
+      default:
+        return { background: 'var(--secondary)', color: 'var(--text)' };
+    }
+  }
+
   if (loading) {
     return (
       <div className="page-shell">
         <section className="panel panel-padding">
-          <h2 className="page-title">Loading orders...</h2>
-          <p className="page-subtitle">Fetching the latest updates from your account.</p>
+          <div className="skeleton skeleton-title" style={{ width: '30%', marginBottom: '0.5rem' }} />
         </section>
+
+        <div className="stack-sm">
+          {[0, 1, 2, 3].map((item) => (
+            <div key={item} className="panel-card" style={{ padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ display: 'grid', gap: '0.4rem' }}>
+                <div className="skeleton skeleton-title" style={{ width: '120px' }} />
+                <div className="skeleton skeleton-text" style={{ width: '200px' }} />
+              </div>
+              <div style={{ display: 'grid', gap: '0.4rem', alignItems: 'flex-end' }}>
+                <div className="skeleton skeleton-title" style={{ width: '80px' }} />
+                <div className="skeleton" style={{ height: '2.2rem', width: '110px', borderRadius: '10px' }} />
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
@@ -104,27 +140,29 @@ function OrdersPage() {
 
         <div className="stack-sm">
           {orders.map((order, index) => (
-            <div key={order.id} className="panel-card">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-                <div>
+            <div key={order.id} className="panel-card" style={{ padding: '1rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem', flexWrap: 'wrap' }}>
+                <div style={{ display: 'grid', gap: '0.4rem' }}>
                   <div style={{ fontWeight: 700 }}>Order #{index + 1}</div>
                   <div className="muted" style={{ fontSize: '0.95rem' }}>
-                    Date: {formatDate(order.createdAt)} • Status: {order.status}
+                    Date: {formatDate(order.createdAt)}
                   </div>
+                  <span style={{ ...getStatusStyle(order.status), borderRadius: '999px', padding: '0.2rem 0.65rem', fontSize: '0.8rem', fontWeight: 700, display: 'inline-block', width: 'fit-content' }}>
+                    {order.status}
+                  </span>
+                  <button type="button" onClick={() => toggleExpand(order.id)} className="btn btn-secondary" style={{ marginTop: '0.25rem', width: 'fit-content' }}>
+                    {expandedOrderId === order.id ? 'Hide details' : 'View details'}
+                  </button>
                 </div>
 
                 <div style={{ textAlign: 'right' }}>
                   <div style={{ fontWeight: 700 }}>${parseFloat(order.totalAmount || '0').toFixed(2)}</div>
-                  <div style={{ marginTop: '0.5rem' }}>
-                    <button type="button" onClick={() => toggleExpand(order.id)} className="btn btn-secondary">
-                      {expandedOrderId === order.id ? 'Hide details' : 'View details'}
-                    </button>
-                  </div>
                 </div>
               </div>
 
               {expandedOrderId === order.id && (
                 <div style={{ marginTop: '1rem', display: 'grid', gap: '0.75rem' }}>
+                  <div className="muted" style={{ fontSize: '0.85rem', marginBottom: '0.25rem' }}>Items in this order</div>
                   {Array.isArray(order.items) && order.items.length > 0 ? (
                     order.items.map((it) => (
                       <div key={it.id} className="panel-card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.75rem 1rem', flexWrap: 'wrap', gap: '0.5rem' }}>

@@ -115,9 +115,22 @@ function CartPage() {
     return (
       <div className="page-shell">
         <section className="panel panel-padding">
-          <h2 className="page-title">Loading your cart...</h2>
-          <p className="page-subtitle">Refreshing the latest items in your basket.</p>
+          <div className="skeleton skeleton-title" style={{ width: '35%', marginBottom: '0.5rem' }} />
+          <div className="skeleton skeleton-text" style={{ width: '25%' }} />
         </section>
+
+        <div className="stack-sm">
+          {[0, 1, 2].map((item) => (
+            <div key={item} className="panel-card" style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: '1rem', padding: '1rem' }}>
+              <div className="skeleton" style={{ height: '120px', borderRadius: '8px' }} />
+              <div style={{ display: 'grid', gap: '0.75rem' }}>
+                <div className="skeleton skeleton-title" style={{ width: '60%' }} />
+                <div className="skeleton skeleton-text" style={{ width: '35%' }} />
+                <div className="skeleton" style={{ height: '2.5rem', borderRadius: '10px', width: '130px' }} />
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
@@ -145,6 +158,13 @@ function CartPage() {
         <section className="panel panel-padding" style={{ textAlign: 'center' }}>
           <h2 className="page-title">Your Shopping Cart</h2>
           <p className="page-subtitle" style={{ marginBottom: '1rem' }}>Your shopping cart is empty.</p>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', fontSize: '0.85rem', marginBottom: '1rem' }}>
+            <span style={{ fontWeight: 700, color: 'var(--primary)' }}>🛒 Cart</span>
+            <span style={{ color: 'var(--muted)' }}>→</span>
+            <span style={{ color: 'var(--muted)' }}>📦 Checkout</span>
+            <span style={{ color: 'var(--muted)' }}>→</span>
+            <span style={{ color: 'var(--muted)' }}>✅ Confirm</span>
+          </div>
           <Link to="/products" className="btn btn-primary">
             Continue Shopping
           </Link>
@@ -161,9 +181,17 @@ function CartPage() {
           {totalItems} item{totalItems !== 1 ? 's' : ''} in your cart
         </p>
 
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', marginBottom: '1.25rem' }}>
+          <span style={{ fontWeight: 700, color: 'var(--primary)' }}>🛒 Cart</span>
+          <span style={{ color: 'var(--muted)' }}>→</span>
+          <span style={{ color: 'var(--muted)' }}>📦 Checkout</span>
+          <span style={{ color: 'var(--muted)' }}>→</span>
+          <span style={{ color: 'var(--muted)' }}>✅ Confirm</span>
+        </div>
+
         <div className="stack-sm">
           {cartItems.map((item) => (
-            <div key={item.cartItemId} className="panel-card" style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: '1rem', padding: '1rem', alignItems: 'start' }}>
+            <div key={item.cartItemId} className="panel-card" style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: '1rem', padding: '1rem', alignItems: 'start', transition: 'box-shadow 0.2s ease' }}>
               <img
                 src={item.imageUrl || 'https://picsum.photos/seed/product/200/200'}
                 alt={item.productName}
@@ -206,6 +234,8 @@ function CartPage() {
       </section>
 
       <section className="panel panel-padding" style={{ display: 'grid', gap: '1rem' }}>
+        <h3 className="section-title" style={{ marginTop: 0 }}>Order Summary</h3>
+
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '1rem', borderBottom: '1px solid var(--border)' }}>
           <span style={{ fontSize: '1.05rem', fontWeight: 600 }}>Total Items:</span>
           <span>{totalItems}</span>
@@ -213,16 +243,18 @@ function CartPage() {
 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span style={{ fontSize: '1.15rem', fontWeight: 600 }}>Total Amount:</span>
-          <strong style={{ fontSize: '1.4rem' }}>${totalAmount.toFixed(2)}</strong>
+          <strong style={{ fontSize: '1.6rem' }}>${totalAmount.toFixed(2)}</strong>
         </div>
 
-        <button type="button" onClick={() => navigate('/checkout')} className="btn btn-primary">
-          Proceed to Checkout
-        </button>
+        <div style={{ display: 'grid', gap: '0.75rem' }}>
+          <button type="button" onClick={() => navigate('/checkout')} className="btn btn-primary" style={{ width: '100%' }}>
+            Proceed to Checkout
+          </button>
 
-        <Link to="/products" className="btn btn-secondary">
-          Continue Shopping
-        </Link>
+          <Link to="/products" className="btn btn-secondary">
+            Continue Shopping
+          </Link>
+        </div>
       </section>
     </div>
   );

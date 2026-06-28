@@ -104,8 +104,40 @@ function CustomerSegmentationPage() {
     return (
       <div className="page-shell">
         <section className="panel panel-padding">
-          <h2 className="page-title">Loading customer segmentation data...</h2>
-          <p className="page-subtitle">Preparing the latest customer insights.</p>
+          <div className="skeleton skeleton-title" style={{ width: '35%', marginBottom: '0.5rem' }} />
+          <div className="skeleton skeleton-text" style={{ width: '55%', marginBottom: '1rem' }} />
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem' }}>
+            {[0, 1, 2, 3].map((item) => (
+              <div key={item} className="panel-card" style={{ padding: '1rem', display: 'grid', gap: '0.4rem' }}>
+                <div className="skeleton skeleton-text" style={{ width: '50%' }} />
+                <div className="skeleton skeleton-title" style={{ width: '40%' }} />
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="panel panel-padding">
+          <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem' }}>
+            <div className="skeleton" style={{ height: '2.8rem', width: '100%', borderRadius: '10px' }} />
+            <div className="skeleton" style={{ height: '2.8rem', width: '140px', borderRadius: '10px' }} />
+            <div className="skeleton" style={{ height: '2.8rem', width: '140px', borderRadius: '10px' }} />
+          </div>
+
+          <div className="stack-sm">
+            {[0, 1, 2, 3, 4].map((row) => (
+              <div key={row} className="panel-card" style={{ padding: '0.75rem', display: 'flex', justifyContent: 'space-between' }}>
+                <div style={{ display: 'grid', gap: '0.35rem' }}>
+                  <div className="skeleton skeleton-text" style={{ width: '140px' }} />
+                  <div className="skeleton skeleton-text" style={{ width: '180px' }} />
+                </div>
+                <div style={{ display: 'flex', gap: '0.75rem' }}>
+                  <div className="skeleton skeleton-text" style={{ width: '70px' }} />
+                  <div className="skeleton" style={{ width: '80px', height: '1.6rem', borderRadius: '999px' }} />
+                </div>
+              </div>
+            ))}
+          </div>
         </section>
       </div>
     );
@@ -130,7 +162,7 @@ function CustomerSegmentationPage() {
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem' }}>
           {summary.map((item) => (
-            <div key={item.label} className="panel-card">
+            <div key={item.label} className="panel-card" style={{ padding: '1rem', borderLeft: '4px solid var(--primary)', borderRadius: '0 12px 12px 0' }}>
               <div className="muted" style={{ fontSize: '0.9rem' }}>{item.label}</div>
               <div style={{ fontSize: '1.5rem', fontWeight: 700, marginTop: '0.35rem' }}>{item.value}</div>
             </div>
@@ -169,7 +201,7 @@ function CustomerSegmentationPage() {
         </div>
 
         {filteredCustomers.length === 0 ? (
-          <div className="panel-card">No customers match the current search and filter.</div>
+          <div className="empty-state">No customers match the current search and filter.</div>
         ) : (
           <div style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>

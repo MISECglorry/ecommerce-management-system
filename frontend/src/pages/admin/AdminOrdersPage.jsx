@@ -10,15 +10,15 @@ function getStatusBadgeStyle(status) {
 
   switch (normalized) {
     case 'CREATED':
-      return { background: '#fef3c7', color: '#92400e' };
+      return { background: 'var(--secondary)', color: 'var(--text)' };
     case 'PROCESSING':
-      return { background: '#dbeafe', color: '#1d4ed8' };
+      return { background: '#dbeafe', color: '#1e40af' };
     case 'COMPLETED':
-      return { background: '#dcfce7', color: '#166534' };
+      return { background: 'var(--success-bg)', color: 'var(--success-text)' };
     case 'CANCELLED':
-      return { background: '#fee2e2', color: '#b91c1c' };
+      return { background: 'var(--error-bg)', color: 'var(--error-text)' };
     default:
-      return { background: '#f3f4f6', color: '#374151' };
+      return { background: 'var(--secondary)', color: 'var(--text)' };
   }
 }
 
@@ -106,11 +106,11 @@ function AdminOrdersPage() {
     const status = String(order.status || '').toUpperCase();
 
     if (status === 'COMPLETED') {
-      return <span style={{ color: '#166534', fontWeight: 600 }}>Completed ✓</span>;
+      return <span style={{ color: 'var(--success-text)', fontWeight: 600 }}>Completed ✓</span>;
     }
 
     if (status === 'CANCELLED') {
-      return <span style={{ color: '#b91c1c', fontWeight: 600 }}>Cancelled ✖</span>;
+      return <span style={{ color: 'var(--error-text)', fontWeight: 600 }}>Cancelled ✖</span>;
     }
 
     const isBusy = busyOrderId === order.id;
@@ -119,10 +119,10 @@ function AdminOrdersPage() {
       <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
         {status === 'CREATED' ? (
           <>
-            <button type="button" disabled={isBusy} onClick={() => handleTransition(order.id, 'process')} style={buttonStyle(isBusy)}>
+            <button type="button" disabled={isBusy} onClick={() => handleTransition(order.id, 'process')} className="btn btn-primary">
               {isBusy ? 'Working...' : 'Start Processing'}
             </button>
-            <button type="button" disabled={isBusy} onClick={() => handleTransition(order.id, 'cancel')} style={secondaryButtonStyle(isBusy)}>
+            <button type="button" disabled={isBusy} onClick={() => handleTransition(order.id, 'cancel')} className="btn btn-secondary">
               {isBusy ? 'Working...' : 'Cancel'}
             </button>
           </>
@@ -130,10 +130,10 @@ function AdminOrdersPage() {
 
         {status === 'PROCESSING' ? (
           <>
-            <button type="button" disabled={isBusy} onClick={() => handleTransition(order.id, 'complete')} style={buttonStyle(isBusy)}>
+            <button type="button" disabled={isBusy} onClick={() => handleTransition(order.id, 'complete')} className="btn btn-primary">
               {isBusy ? 'Working...' : 'Complete'}
             </button>
-            <button type="button" disabled={isBusy} onClick={() => handleTransition(order.id, 'cancel')} style={secondaryButtonStyle(isBusy)}>
+            <button type="button" disabled={isBusy} onClick={() => handleTransition(order.id, 'cancel')} className="btn btn-secondary">
               {isBusy ? 'Working...' : 'Cancel'}
             </button>
           </>
@@ -143,29 +143,52 @@ function AdminOrdersPage() {
   }
 
   if (loading) {
-    return <div style={{ padding: '1.25rem' }}>Loading orders...</div>;
+    return (
+      <div className="page-shell">
+        <section className="panel panel-padding">
+          <div className="skeleton skeleton-title" style={{ width: '30%' }} />
+        </section>
+
+        <div className="stack-sm">
+          {[0, 1, 2, 3].map((item) => (
+            <div key={item} className="panel-card" style={{ padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ display: 'grid', gap: '0.4rem' }}>
+                <div className="skeleton skeleton-title" style={{ width: '140px' }} />
+                <div className="skeleton skeleton-text" style={{ width: '220px' }} />
+              </div>
+              <div style={{ display: 'flex', gap: '0.5rem' }}>
+                <div className="skeleton" style={{ width: '80px', height: '1.8rem', borderRadius: '999px' }} />
+                <div className="skeleton skeleton-title" style={{ width: '70px' }} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
   }
 
   if (error) {
     return (
-      <div style={{ padding: '1.25rem', background: '#fff', borderRadius: '8px' }}>
-        <h2 style={{ marginTop: 0 }}>Admin Orders</h2>
-        <p style={{ color: '#b91c1c' }}>{error}</p>
+      <div className="page-shell">
+        <section className="panel panel-padding">
+          <h2 className="page-title">Admin Orders</h2>
+          <p className="status-message status-error" style={{ marginTop: '0.75rem' }}>{error}</p>
+        </section>
       </div>
     );
   }
 
   return (
-    <div style={{ display: 'grid', gap: '1.25rem' }}>
-      <section style={{ padding: '1.25rem', background: '#fff', borderRadius: '8px' }}>
-        <h2 style={{ marginTop: 0 }}>Admin Orders</h2>
-        <p style={{ color: '#4b5563', marginTop: '-0.25rem' }}>Manage customer orders and update their lifecycle.</p>
+    <div className="page-shell">
+      <section className="panel panel-padding">
+        <h2 className="page-title">Admin Orders</h2>
+        <p className="page-subtitle">Manage customer orders and update their lifecycle.</p>
 
         {actionMessage ? (
-          <div style={{ marginBottom: '1rem', padding: '0.75rem', background: '#dcfce7', color: '#166534', borderRadius: '6px' }}>{actionMessage}</div>
+          <div className="status-message status-success" style={{ marginBottom: '1rem' }}>{actionMessage}</div>
         ) : null}
         {actionError ? (
-          <div style={{ marginBottom: '1rem', padding: '0.75rem', background: '#fee2e2', color: '#b91c1c', borderRadius: '6px' }}>{actionError}</div>
+          <div className="status-message status-error" style={{ marginBottom: '1rem' }}>{actionError}</div>
         ) : null}
 
         <div style={{ display: 'grid', gap: '0.75rem', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', marginBottom: '1rem' }}>
@@ -174,10 +197,10 @@ function AdminOrdersPage() {
             placeholder="Search by order ID"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            style={{ padding: '0.75rem', border: '1px solid #d1d5db', borderRadius: '6px' }}
+            className="form-control"
           />
 
-          <select value={filter} onChange={(e) => setFilter(e.target.value)} style={{ padding: '0.75rem', border: '1px solid #d1d5db', borderRadius: '6px' }}>
+          <select value={filter} onChange={(e) => setFilter(e.target.value)} className="form-control">
             {STATUS_FILTERS.map((status) => (
               <option key={status} value={status}>{status}</option>
             ))}
@@ -185,7 +208,7 @@ function AdminOrdersPage() {
         </div>
 
         {filteredOrders.length === 0 ? (
-          <div style={{ padding: '1rem', background: '#f9fafb', borderRadius: '8px', color: '#4b5563' }}>No orders match the current filters.</div>
+          <div className="empty-state">No orders match the current filters.</div>
         ) : (
           <div style={{ display: 'grid', gap: '1rem' }}>
             {filteredOrders.map((order) => {
@@ -194,11 +217,11 @@ function AdminOrdersPage() {
               const subtotal = parseFloat(order.totalAmount || '0');
 
               return (
-                <div key={order.id} style={{ padding: '1rem', background: '#f9fafb', borderRadius: '8px', border: '1px solid #e5e7eb' }}>
+                <div key={order.id} className="panel-card" style={{ padding: '1rem' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
                     <div>
                       <div style={{ fontWeight: 700 }}>Order #{order.id}</div>
-                      <div style={{ color: '#4b5563', fontSize: '0.95rem', marginTop: '0.2rem' }}>
+                      <div className="muted" style={{ fontSize: '0.95rem', marginTop: '0.2rem' }}>
                         Customer: {order.customerName || 'N/A'} • Items: {itemCount}
                       </div>
                     </div>
@@ -209,37 +232,37 @@ function AdminOrdersPage() {
                     </div>
                   </div>
 
-                  <div style={{ marginTop: '0.75rem', color: '#4b5563', fontSize: '0.95rem' }}>
+                  <div className="muted" style={{ marginTop: '0.75rem', fontSize: '0.95rem' }}>
                     Shipping address: {order.shippingAddress ? `${order.shippingAddress.street}, ${order.shippingAddress.city}, ${order.shippingAddress.country}${order.shippingAddress.zipCode ? `, ${order.shippingAddress.zipCode}` : ''}` : 'N/A'}
                   </div>
 
                   <div style={{ marginTop: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem' }}>
-                    <button type="button" onClick={() => setExpandedOrderId((prev) => prev === order.id ? null : order.id)} style={{ padding: '0.6rem 0.9rem', border: 'none', borderRadius: '6px', background: '#e5e7eb', color: '#111827', cursor: 'pointer' }}>
+                    <button type="button" onClick={() => setExpandedOrderId((prev) => prev === order.id ? null : order.id)} className="btn btn-secondary">
                       {expandedOrderId === order.id ? 'Hide details' : 'View details'}
                     </button>
                     {renderActions(order)}
                   </div>
 
                   {expandedOrderId === order.id ? (
-                    <div style={{ marginTop: '1rem', padding: '0.9rem', background: '#fff', borderRadius: '8px', border: '1px solid #e5e7eb' }}>
+                    <div className="panel panel-padding" style={{ marginTop: '1rem' }}>
                       <div style={{ fontWeight: 700, marginBottom: '0.75rem' }}>Purchased products</div>
                       {Array.isArray(order.items) && order.items.length > 0 ? (
                         <div style={{ display: 'grid', gap: '0.75rem' }}>
                           {order.items.map((item) => (
-                            <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', padding: '0.7rem', background: '#f9fafb', borderRadius: '6px' }}>
+                            <div key={item.id} className="panel-card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', padding: '0.7rem 1rem' }}>
                               <div>
                                 <div style={{ fontWeight: 600 }}>{item.productName}</div>
-                                <div style={{ color: '#4b5563', fontSize: '0.9rem' }}>Qty: {item.quantity}</div>
+                                <div className="muted" style={{ fontSize: '0.9rem' }}>Qty: {item.quantity}</div>
                               </div>
                               <div style={{ textAlign: 'right' }}>
-                                <div style={{ color: '#4b5563', fontSize: '0.9rem' }}>Unit price: ${parseFloat(item.price || '0').toFixed(2)}</div>
+                                <div className="muted" style={{ fontSize: '0.9rem' }}>Unit price: ${parseFloat(item.price || '0').toFixed(2)}</div>
                                 <div style={{ fontWeight: 600 }}>Line total: ${(parseFloat(item.price || '0') * item.quantity).toFixed(2)}</div>
                               </div>
                             </div>
                           ))}
                         </div>
                       ) : (
-                        <div style={{ color: '#4b5563' }}>No items available for this order.</div>
+                        <div className="muted">No items available for this order.</div>
                       )}
 
                       <div style={{ marginTop: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #e5e7eb', paddingTop: '0.75rem' }}>
@@ -256,28 +279,6 @@ function AdminOrdersPage() {
       </section>
     </div>
   );
-}
-
-function buttonStyle(disabled) {
-  return {
-    padding: '0.6rem 0.9rem',
-    border: 'none',
-    borderRadius: '6px',
-    background: disabled ? '#9ca3af' : '#111827',
-    color: '#fff',
-    cursor: disabled ? 'not-allowed' : 'pointer'
-  };
-}
-
-function secondaryButtonStyle(disabled) {
-  return {
-    padding: '0.6rem 0.9rem',
-    border: 'none',
-    borderRadius: '6px',
-    background: disabled ? '#d1d5db' : '#e5e7eb',
-    color: '#111827',
-    cursor: disabled ? 'not-allowed' : 'pointer'
-  };
 }
 
 export default AdminOrdersPage;

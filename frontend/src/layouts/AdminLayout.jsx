@@ -18,32 +18,38 @@ function AdminLayout() {
 
   return (
     <div>
-      <header style={{ padding: '1rem', borderBottom: '1px solid #ddd', background: '#fff' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
-          <img src="/favicon.svg" alt="iStore logo" style={{ width: '40px', height: '40px', borderRadius: '10px' }} />
-          <h1 style={{ margin: 0 }}>Admin Panel</h1>
-        </div>
-        <nav style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem', flexWrap: 'wrap' }}>
-          {navigation.map((item) => {
-            if (item.kind === 'button') {
-              return (
-                <button key={item.key} type="button" onClick={handleLogout} style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: 0 }}>
-                  {item.label}
-                </button>
-              );
-            }
+      <header className="header-root">
+        <div className="header-inner">
+          <div className="header-brand">
+            <img className="header-logo" src="/favicon.svg" alt="iStore logo" />
+            <div className="admin-title-group">
+              <h1>Admin Panel</h1>
+              <span className="admin-badge">Admin</span>
+            </div>
+          </div>
 
-            return (
-              <NavLink
-                key={item.key}
-                to={item.to}
-                style={({ isActive }) => ({ textDecoration: isActive ? 'underline' : 'none', fontWeight: isActive ? 700 : 400 })}
-              >
-                {item.label}
-              </NavLink>
-            );
-          })}
-        </nav>
+          <nav className="header-nav admin-nav">
+            {navigation.map((item) => {
+              if (item.kind === 'button') {
+                return (
+                  <button key={item.key} type="button" onClick={handleLogout} className="nav-link nav-link-button admin-logout-button">
+                    {item.label}
+                  </button>
+                );
+              }
+
+              return (
+                <NavLink
+                  key={item.key}
+                  to={item.to}
+                  className={({ isActive }) => `nav-link admin-nav-link ${isActive ? 'active' : ''}`}
+                >
+                  {item.label}
+                </NavLink>
+              );
+            })}
+          </nav>
+        </div>
       </header>
 
       <main>
